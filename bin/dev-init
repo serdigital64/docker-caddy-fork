@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Template: 1.0.1
+# Version: 1.1.0
+#######################################
+# Copyright SerDigital64 - https://github.com/serdigital64
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at: http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#######################################
+
+export DEV_PROFILE="${DEV_PROFILE:-none}"
+# Set the requested profile before sourcing devbin64
+declare MY_PROFILE="${1:-${DEV_PROFILE}}"
+DEV_PROFILE="${MY_PROFILE}"
+
+# shellcheck source=bin/dev-set
+source ./bin/dev-set || { echo 'dev-set:Error: unable to load dev environment' 2>&1 && return 1; }
+
+function dev_create() {
+  [[ "${DEV_PROFILE}" == 'none' ]] && return 0
+  [[ -d "${DEV_PATH_ETC}/${DEV_BASE_PROFILE}/${DEV_PROFILE}" ]] && return 0
+  ./bin/dev-profile-create
+}
+
+function dev_show() {
+  echo "Development environment initialized:
+  DEV_PROFILE: ${DEV_PROFILE}
+  DEV_PATH_ROOT: ${DEV_PATH_ROOT}
+  DEV_PATH_SRC: ${DEV_PATH_SRC}
+  DEV_PATH_BUILD: ${DEV_PATH_BUILD}
+  DEV_PATH_BIN: ${DEV_PATH_BIN}"
+}
+
+function dev_initialize() {
+  :
+}
+
+[[ -n "$DEV_CICD_DEBUG" ]] && set -x
+
+dev_initialize &&
+  dev_create &&
+  dev_show &&
+  unset dev_initialize &&
+  unset dev_create &&
+  unset dev_show
