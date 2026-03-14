@@ -1,6 +1,7 @@
 bash
-container
 cosign
+docker
+git
+github
 gitleaks
 hadolint
-docker

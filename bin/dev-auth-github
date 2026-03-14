@@ -20,26 +20,26 @@ source "${DEV_LIB_BASHLIB64_TARGET}/bashlib64-module-fs.bash" &&
   source "${DEV_LIB_BASHLIB64_TARGET}/bashlib64-module-fmt.bash" &&
   source "${DEV_LIB_BASHLIB64_TARGET}/bashlib64-module-bsh.bash" &&
   source "${DEV_LIB_BASHLIB64_TARGET}/bashlib64-core.bash" || exit 1
+source ./bin/dev-env-github || exit 1
 
-function my_list() {
+function my_auth() {
   bl64_dbg_app_show_function
-  if [[ -d "${DEV_PATH_ETC}/${DEV_BASE_PROFILE}" ]]; then
-    cd "${DEV_PATH_ETC}/${DEV_BASE_PROFILE}" &&
-      echo *
-  else
-    bl64_msg_show_warning 'repository has no profiles created'
-  fi
+  [[ -z "$GITHUB_TOKEN" ]] && bl64_msg_show_warning 'variable GITHUB_TOKEN is unset, using interactive login'
+  "$DEV_LIB_GITHUB_BIN" \
+    auth login \
+    --scopes "$DEV_AUTH_GITHUB_SCOPES"
 }
 
 function my_initialize() {
   bl64_dbg_app_show_function
-  dev_bin64_task_initialize
+  dev_bin64_task_initialize &&
+    bl64_check_command "$DEV_LIB_GITHUB_BIN"
 }
 
-bl64_lib_script_version_set '1.0.1'
-bl64_msg_help_about_set 'List devbin64 profiles'
+bl64_lib_script_version_set '1.2.3'
+bl64_msg_help_about_set 'Login to the service'
 dev_bin64_initialize && my_initialize || exit $?
 
 bl64_msg_show_batch_start "$BL64_SCRIPT_ID"
-my_list
+my_auth
 bl64_msg_show_batch_finish $? "$BL64_SCRIPT_ID"

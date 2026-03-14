@@ -5,5 +5,5 @@
   --access-log \
   --browse \
   --reveal-symlinks \
-  --listen="$GO64_DOCKER_CADDY_FILE__CFG_PORT" \
+  --listen="$MY_CADDY_CFG_PORT" \
   --root='/srv'

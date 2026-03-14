@@ -14,32 +14,43 @@
 #######################################
 
 source ./bin/dev-set || { echo 'dev-set:Error: unable to load dev environment' 2>&1 && exit 1; }
-source "${DEV_LIB_BASHLIB64_TARGET}/bashlib64-module-fs.bash" &&
+source "${DEV_LIB_BASHLIB64_TARGET}/bashlib64-module-rxtx.bash" &&
+  source "${DEV_LIB_BASHLIB64_TARGET}/bashlib64-module-api.bash" &&
+  source "${DEV_LIB_BASHLIB64_TARGET}/bashlib64-module-vcs.bash" &&
+  source "${DEV_LIB_BASHLIB64_TARGET}/bashlib64-module-fs.bash" &&
   source "${DEV_LIB_BASHLIB64_TARGET}/bashlib64-module-txt.bash" &&
   source "${DEV_LIB_BASHLIB64_TARGET}/bashlib64-module-xsv.bash" &&
   source "${DEV_LIB_BASHLIB64_TARGET}/bashlib64-module-fmt.bash" &&
   source "${DEV_LIB_BASHLIB64_TARGET}/bashlib64-module-bsh.bash" &&
   source "${DEV_LIB_BASHLIB64_TARGET}/bashlib64-core.bash" || exit 1
+source ./bin/dev-env-git || exit 1
 
-function my_list() {
+declare MY_BRANCH="${1:-"${DEV_GIT_BRANCH_FEATURE}"}"
+
+function my_create() {
   bl64_dbg_app_show_function
-  if [[ -d "${DEV_PATH_ETC}/${DEV_BASE_PROFILE}" ]]; then
-    cd "${DEV_PATH_ETC}/${DEV_BASE_PROFILE}" &&
-      echo *
-  else
-    bl64_msg_show_warning 'repository has no profiles created'
-  fi
+
+  bl64_msg_show_task "switch to main branch (${DEV_GIT_BRANCH_MAIN})"
+  bl64_vcs_run_git checkout "$DEV_GIT_BRANCH_MAIN" &&
+    bl64_msg_show_task "create branch (${MY_BRANCH})" &&
+    bl64_vcs_run_git checkout -b "$MY_BRANCH" &&
+    bl64_msg_show_task "register branch in origin (${DEV_GIT_REMOTE_ORIGIN}/${MY_BRANCH})" &&
+    bl64_vcs_run_git push --set-upstream "${DEV_GIT_REMOTE_ORIGIN}" "${MY_BRANCH}"
 }
 
 function my_initialize() {
   bl64_dbg_app_show_function
-  dev_bin64_task_initialize
+  dev_bin64_task_initialize &&
+  bl64_vcs_setup &&
+    dev_bin64_task_show_setup \
+      'DEV_GIT_REMOTE_ORIGIN' \
+      'MY_BRANCH'
 }
 
-bl64_lib_script_version_set '1.0.1'
-bl64_msg_help_about_set 'List devbin64 profiles'
+bl64_lib_script_version_set '3.4.1'
+bl64_msg_help_about_set 'Create GIT branch and push to origin'
 dev_bin64_initialize && my_initialize || exit $?
 
 bl64_msg_show_batch_start "$BL64_SCRIPT_ID"
-my_list
+my_create
 bl64_msg_show_batch_finish $? "$BL64_SCRIPT_ID"

@@ -2,19 +2,19 @@
 # Core
 #
 
-variable "GO64_CORE__SET_DEBUG"{
+variable "MY_CORE_SET_DEBUG"{
   default = "NONE"
 }
-variable "GO64_CORE__SET_VERBOSE"{
+variable "MY_CORE_SET_VERBOSE"{
   default = "ALL"
 }
-variable "GO64_CORE__PATH_BL64"{
+variable "MY_CORE_PATH_BL64"{
   default = "/opt/bl64"
 }
-variable "GO64_CORE__PATH_INST64"{
+variable "MY_CORE_PATH_INST64"{
   default = "/opt/inst64"
 }
-variable "GO64_CORE__PATH_SO64"{
+variable "MY_CORE_PATH_SO64"{
   default = "/opt/sysop64"
 }
 
@@ -26,32 +26,32 @@ variable "TAG"{
   default = "latest"
 }
 
-variable "GO64_DOCKER_CADDY_FILE__CFG_BASEIMAGE"{
+variable "MY_CADDY_CFG_BASEIMAGE"{
   default = "ghcr.io/automation64/base/alpine-3.21-base:latest"
 }
-variable "GO64_DOCKER_CADDY_FILE__CFG_PORT"{
+variable "MY_CADDY_CFG_PORT"{
   default = ":8080"
 }
 
 group "default"{
   targets = [
-    "file"
+    "file_server"
   ]
 }
 
-target "file"{
+target "file_server"{
   tags = [
-    "file:${TAG}"
+    "caddy-file-server:${TAG}"
   ]
-  context = "src/file"
+  context = "file-server"
   dockerfile = "Dockerfile"
   args = {
-    GO64_CORE__SET_DEBUG = GO64_CORE__SET_DEBUG
-    GO64_CORE__SET_VERBOSE = GO64_CORE__SET_VERBOSE
-    GO64_CORE__PATH_INST64 = GO64_CORE__PATH_INST64
-    GO64_CORE__PATH_SO64 = GO64_CORE__PATH_SO64
-    GO64_DOCKER_CADDY_FILE__CFG_BASEIMAGE = GO64_DOCKER_CADDY_FILE__CFG_BASEIMAGE
+    MY_CORE_SET_DEBUG = MY_CORE_SET_DEBUG
+    MY_CORE_SET_VERBOSE = MY_CORE_SET_VERBOSE
+    MY_CORE_PATH_INST64 = MY_CORE_PATH_INST64
+    MY_CORE_PATH_SO64 = MY_CORE_PATH_SO64
 
-    GO64_DOCKER_CADDY_FILE__CFG_PORT = GO64_DOCKER_CADDY_FILE__CFG_PORT
+    MY_CADDY_CFG_BASEIMAGE = MY_CADDY_CFG_BASEIMAGE
+    MY_CADDY_CFG_PORT = MY_CADDY_CFG_PORT
   }
 }

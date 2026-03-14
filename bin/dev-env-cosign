@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# * Version: 1.1.1
+# template-env: 1.2.0
 #######################################
 # Copyright SerDigital64 - https://github.com/serdigital64
 #
@@ -14,10 +14,24 @@
 #######################################
 
 #
-# Globals
+# Module variables
 #
-# * Use .env file to override values
+# * Shared internal variables for module tasks
 #
+
+# shellcheck disable=SC2154
+{
+  # Env / Cosign / Module environment definition version
+  export DEV_ENV_COSIGN_ID='cosign'
+  export DEV_ENV_COSIGN_VERSION='1.2.0'
+
+  # Lib / Cosign / Installer
+  export DEV_LIB_COSIGN_INSTALLER="${DEV_LIB_INSTALLER64_TARGET}/install-cosign"
+  # Lib / Cosign / Skip installation?
+  export DEV_LIB_COSIGN_SKIP='YES'
+  # Lib / Cosign / Target
+  export DEV_LIB_COSIGN_TARGET="${DEV_PATH_LIB}/${DEV_ENV_COSIGN_ID}"
+}
 
 #
 # Locals
@@ -27,25 +41,35 @@
 
 # shellcheck disable=SC2154
 {
-    # Lib / Cosign / Target
-    export DEV_LIB_COSIGN_TARGET="${DEV_LIB_COSIGN_TARGET:-${DEV_PATH_LIB}/cosign}"
-    # Lib / Cosign / Command
-    export DEV_LIB_COSIGN_BIN="${DEV_LIB_COSIGN_TARGET}/cosign"
-    # Auth / Cosign / Server
-    export DEV_AUTH_COSIGN_SERVER="${DEV_AUTH_COSIGN_SERVER:-}"
-    # Auth / Cosign / Server Type
-    export DEV_AUTH_COSIGN_TYPE="${DEV_AUTH_COSIGN_TYPE:-GITHUB}"
+  # Auth / Cosign / Server
+  export DEV_AUTH_COSIGN_SERVER="${DEV_AUTH_COSIGN_SERVER:-}"
+  # Auth / Cosign / Server Type
+  export DEV_AUTH_COSIGN_TYPE="${DEV_AUTH_COSIGN_TYPE:-GITHUB}"
+
+  # Lib / Cosign / Command
+  export DEV_LIB_COSIGN_BIN="${DEV_LIB_COSIGN_BIN:-}"
+  if [[ -z "$DEV_LIB_COSIGN_BIN" ]]; then
+    DEV_LIB_COSIGN_BIN="$(dev_bin64_lib_locate 'cosign')"
+    if [[ -z "$DEV_LIB_COSIGN_BIN" ]]; then
+      DEV_LIB_COSIGN_BIN="${DEV_LIB_COSIGN_TARGET}/cosign"
+      if [[ ! -x "${DEV_LIB_COSIGN_BIN}" ]]; then
+        DEV_LIB_COSIGN_SKIP='NO'
+      fi
+    else
+      DEV_LIB_COSIGN_TARGET="$(dev_bin64_lib_basename "$DEV_LIB_COSIGN_BIN")"
+    fi
+  fi
 }
 
 #
 # Secrets
 #
-# * Use .secrets.env file or CICD secrets to override values
+# * Declaration only. Use .secrets.env file or CICD secrets to set values
 #
 
 # shellcheck disable=SC2154
 {
-    # Auth / Cosign / Server User
-    export DEV_AUTH_COSIGN_USER="${DEV_AUTH_COSIGN_USER:-}"
-    export DEV_AUTH_COSIGN_PASSWORD="${DEV_AUTH_COSIGN_PASSWORD:-}"
+  # Auth / Cosign / Server User
+  export DEV_AUTH_COSIGN_USER="${DEV_AUTH_COSIGN_USER:-}"
+  export DEV_AUTH_COSIGN_PASSWORD="${DEV_AUTH_COSIGN_PASSWORD:-}"
 }
