@@ -1,0 +1,51 @@
+# Docker-Caddy
+
+![License](https://img.shields.io/github/license/automation64/docker-caddy)
+![GitHub stars](https://img.shields.io/github/stars/automation64/docker-caddy?style=social)
+![GitHub forks](https://img.shields.io/github/forks/automation64/docker-caddy?style=social)
+![Release Downloads](https://img.shields.io/github/downloads/automation64/docker-caddy/total)
+
+---
+
+- [Docker-Caddy](#docker-caddy)
+  - [📌 Overview](#-overview)
+  - [🛠 Contributing](#-contributing)
+  - [⚠️ Disclaimer](#️-disclaimer)
+  - [📜 License](#-license)
+  - [👤 Author](#-author)
+
+---
+
+## 📌 Overview
+
+Docker definition for creating a Caddy container.
+
+---
+
+## 🛠 Contributing
+
+Contributions are welcome! Help us improve by submitting issues, feature requests, or pull requests.
+
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+
+---
+
+## ⚠️ Disclaimer
+
+This repository is provided "as is" without any warranties. The author is not responsible for any damages or issues arising from its use. Additionally, this project is not affiliated with or endorsed by any organization or entity. Use at your own risk.
+
+---
+
+## 📜 License
+
+**docker-caddy** is licensed under the [Apache-2.0 License](https://www.apache.org/licenses/LICENSE-2.0.txt).
+
+---
+
+## 👤 Author
+
+- [SerDigital64](https://github.com/serdigital64)
+
+---
+
+🌟 **If you find this project useful, consider giving it a star!** ⭐
